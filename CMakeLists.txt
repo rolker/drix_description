@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 project(drix_description)
 
-find_package(catkin REQUIRED COMPONENTS
-  xacro
+find_package(ament_cmake REQUIRED)
+
+install(
+  DIRECTORY config launch models urdf
+  DESTINATION share/${PROJECT_NAME}
 )
 
-catkin_package(
-  CATKIN_DEPENDS xacro
-)
+ament_package()
