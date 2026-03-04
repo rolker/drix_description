@@ -1,7 +1,0 @@
-<launch>
-  <arg name="drixNumber"/>
-  <arg name="namespace" default="project11/drix_$(arg drixNumber)"/>
-  <arg name="model" default="$(find drix_description)/urdf/drix_mesh.xacro"/>
-
-  <param name="$(arg namespace)/robot_description" command="$(find xacro)/xacro $(arg model) drixNumber:=$(arg drixNumber) namespace:=$(arg namespace)"/>
-</launch>
