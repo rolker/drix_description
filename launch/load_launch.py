@@ -1,35 +1,40 @@
-from ament_index_python.packages import get_package_share_path
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import Command
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import TextSubstitution
-from launch_ros.actions import SetParameter
-from launch_ros.parameter_descriptions import ParameterValue
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    namespace = LaunchConfiguration('namespace')
-    parameter_name = LaunchConfiguration('parameter_name')
-
+    drix_number_arg = DeclareLaunchArgument('drixNumber')
     namespace_arg = DeclareLaunchArgument(
-      "namespace", default_value=TextSubstitution(text="drix")
+        'namespace',
+        default_value=['project11/drix_', LaunchConfiguration('drixNumber')]
     )
-
-    parameter_name_arg = DeclareLaunchArgument(
-        'parameter_name', default_value=[namespace, '.robot_description']
-    )
-
-    path_to_urdf = get_package_share_path('drix_description') / 'urdf' / 'drix_mesh.xacro'
-    set_robot_description = SetParameter(
-        name=parameter_name,
-        value=ParameterValue(
-            Command(['xacro ', str(path_to_urdf)])
+    model_arg = DeclareLaunchArgument(
+        'model',
+        default_value=PathJoinSubstitution(
+            [FindPackageShare('drix_description'), 'urdf', 'drix_mesh.xacro']
         )
     )
 
+    robot_description = Command([
+        FindExecutable(name='xacro'), ' ',
+        LaunchConfiguration('model'),
+        ' drixNumber:=', LaunchConfiguration('drixNumber'),
+        ' namespace:=', LaunchConfiguration('namespace'),
+    ])
+
+    robot_state_publisher_node = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        namespace=LaunchConfiguration('namespace'),
+        parameters=[{'robot_description': robot_description}],
+    )
+
     return LaunchDescription([
-       namespace_arg,
-       parameter_name_arg,
-       set_robot_description
+        drix_number_arg,
+        namespace_arg,
+        model_arg,
+        robot_state_publisher_node,
     ])

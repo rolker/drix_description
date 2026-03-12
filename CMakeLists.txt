@@ -1,18 +1,11 @@
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.8)
 project(drix_description)
 
 find_package(ament_cmake REQUIRED)
-find_package(xacro REQUIRED)
 
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
-install(DIRECTORY rviz DESTINATION share/${PROJECT_NAME})
-install(DIRECTORY urdf DESTINATION share/${PROJECT_NAME})
-
-ament_environment_hooks("hooks/resource_paths.dsv.in")
-ament_environment_hooks("hooks/resource_paths.sh")
-
-ament_export_dependencies(
-  xacro
+install(
+  DIRECTORY config launch models urdf
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()
