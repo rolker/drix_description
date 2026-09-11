@@ -7,7 +7,7 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    drix_number_arg = DeclareLaunchArgument('drixNumber')
+    drix_number_arg = DeclareLaunchArgument('drixNumber', default_value='8')
     namespace_arg = DeclareLaunchArgument(
         'namespace',
         default_value=['project11/drix_', LaunchConfiguration('drixNumber')]
